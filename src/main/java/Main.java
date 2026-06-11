@@ -57,6 +57,7 @@ void main() {
     o3.addProduct(p15);
     o3.addProduct(p17);
     o3.addProduct(p4);
+    o3.addProduct(p2);
 
     Order o4 = new Order(OrderStatus.inAttesa, c4);
     o4.addProduct(p8);
@@ -148,5 +149,33 @@ void main() {
 
     categorieESomma.forEach((category, somma) -> System.out.println("Category : " + category + " = " + somma));
 
+
+    // TROVO TUTTI I PRODOTTI DISTINTI DA CLIENTI DI TIER 2 E RIMUOVO SE PRESENTI I DUPLICATI
+
+    List<Product> soloProdottiDaClientiTier2 = listaOrdini.stream().filter(order -> order.getCustomer().getTier() == 2).flatMap(order -> order.getProducts().stream()).distinct().toList();
+    soloProdottiDaClientiTier2.forEach(product -> System.out.println("Prodotto : " + product));
+
+    // RAGGRUPPA I PRODOTTI PER CATEGORIA E MOSTRO QUANTI PRODOTTI CI SONO PER CATEGORIA
+
+    //Map<Categories, List<Product>> prodottiACategoria = listaProdotti.stream().collect(Collectors.groupingBy((product) -> product.getCategory()));
+    Map<Categories, Long> prodottiACategoria = listaProdotti.stream().collect(Collectors.groupingBy((product) -> product.getCategory(), Collectors.counting()));
+    prodottiACategoria.forEach((category, products) -> System.out.println("categoria : " + category + " prodotti : " + " " + products));
+
+    // TROVO I 3 ORDINI PER IL TOTALE PIU ALTO
+    List<Order> ordiniPiuCari = listaOrdini.stream().sorted(Comparator.comparingDouble((Order order) -> order.calculateTotal()).reversed()).limit(3).toList();
+    ordiniPiuCari.forEach(order -> System.out.println("Cliente : " + order.getCustomer().getName() + " | Totale ordine : " + order.calculateTotal() + order));
+
+    // RAGRUPPO NEI DIVERSI STATUS E CALCOLO IL PREZZO MEDIO DEI PRODOTTI
+    Map<OrderStatus, List<Order>> oridiniPerStato = listaOrdini.stream().collect(Collectors.groupingBy(order -> order.getStatus()));
+    oridiniPerStato.forEach((status, orders) -> System.out.println("stato : " + status + " | Ordini : " + orders));
+    oridiniPerStato.forEach((status, orders) -> {
+        double media = orders.stream().flatMap(order -> order.getProducts().stream()).mapToDouble(product -> product.getPrice()).average().orElse(0.0);
+        System.out.println("Stato : " + status + " media = " + media);
+    });
+
+    // PRENDO TUTTI GLI ORDINI IN ATTESA , ESTRAGGO TUTTI I LORO PRODOTTI E CALCOLO IL VALORE COMPLESSIVO DI TUTTI QUESTI PRODOTTI
+
+    double sommaOrdini = listaOrdini.stream().filter(order -> order.getStatus().equals(OrderStatus.inAttesa) || order.getStatus().equals(OrderStatus.confermato)).flatMap(order -> order.getProducts().stream()).mapToDouble(product -> product.getPrice()).sum();
+    System.out.println("somma : " + sommaOrdini);
 }
 

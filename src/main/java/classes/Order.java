@@ -44,6 +44,10 @@ public class Order {
         return orderDate;
     }
 
+    public OrderStatus getStatus() {
+        return status;
+    }
+
     public double calculateTotal() {
         return this.products.stream().collect(Collectors.summarizingDouble(product -> product.getPrice())).getSum();
     }
