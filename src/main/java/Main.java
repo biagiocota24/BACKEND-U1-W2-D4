@@ -123,6 +123,30 @@ void main() {
     List<Product> prodottiDalPiuCostoso = listaProdotti.stream().sorted(Comparator.comparingDouble((Product product) -> product.getPrice()).reversed()).limit(5).toList();
     prodottiDalPiuCostoso.forEach(product -> System.out.println(product));
 
+    // ESERCIZIO 4 STREAM() 2
+
+    OptionalDouble mediaOrdiniprov = listaOrdini.stream().mapToDouble(order -> order.calculateTotal()).average();
+    System.out.println(mediaOrdiniprov);
+
+    List<Order> listaOrdini2 = new ArrayList<>();
+
+    double mediaOrdini = listaOrdini2.stream().mapToDouble(order -> order.calculateTotal()).average().orElse(0.0);
+    System.out.println("media in double : " + mediaOrdini);
+
+//    if (mediaOrdiniprov.isPresent()) {
+//        double mediaOrdini = mediaOrdiniprov.getAsDouble();
+//        System.out.println("media come double : "+mediaOrdini);
+//    } else {
+//        System.out.println("La media non e stata calcolata");
+//    }
+
+
+    // ESERCIZIO 5 STREAM() 2
+
+//    listaProdotti.stream().collect(Collectors.groupingBy(product -> product.getCategory())).forEach((categories, products) -> products.stream().collect(Collectors.summingDouble(product -> product.getPrice())));
+    Map<Categories, Double> categorieESomma = listaProdotti.stream().collect(Collectors.groupingBy(product -> product.getCategory(), Collectors.summingDouble(product -> product.getPrice())));
+
+    categorieESomma.forEach((category, somma) -> System.out.println("Category : " + category + " = " + somma));
 
 }
 
