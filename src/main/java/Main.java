@@ -118,6 +118,11 @@ void main() {
         System.out.println("customer :" + customer.getName() + " Total : " + totaleCliente);
     });
 
+    // ESERCIZIO 3 STREAM() 2
+
+    List<Product> prodottiDalPiuCostoso = listaProdotti.stream().sorted(Comparator.comparingDouble((Product product) -> product.getPrice()).reversed()).limit(5).toList();
+    prodottiDalPiuCostoso.forEach(product -> System.out.println(product));
+
 
 }
 
